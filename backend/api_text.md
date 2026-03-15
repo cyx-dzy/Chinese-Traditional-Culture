@@ -28,7 +28,7 @@
 - **导入初始数据（可选但强烈推荐）**
   ```bash
   cd d:\desktop\笔记用的\计算机设计大赛\project\Chinese-Traditional-Culture
-  python -m backend.import_data
+  python backend/sql/writh_sql.py
   ```
 
 - **启动后端服务**
@@ -359,7 +359,7 @@
   - 重启 `uvicorn`。
 
 - **2. 返回数据为空数组 `[]`**
-  - 检查是否已经成功执行 `python -m backend.import_data`。
+  - 检查是否已经成功执行 `python backend/sql/writh_sql.py`。
   - 在 MySQL 中确认对应表的记录是否存在（例如 `SELECT * FROM buildings;`）。
 
 - **3. CORS 相关问题（前端开发调试时）**
