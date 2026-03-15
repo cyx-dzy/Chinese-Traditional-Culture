@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Python tooling
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local environment overrides
+.env
+
+# Data & generated files (keep source CSV if needed)
+
+backend/sql/*.pyc
+
