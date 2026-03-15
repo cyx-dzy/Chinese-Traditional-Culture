@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    app_name: str = "Ancient Building Backend"
+    app_name: str = "溯光而行"
     debug: bool = True
 
     db_host: str = "127.0.0.1"

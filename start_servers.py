@@ -3,8 +3,54 @@ import sys
 import os
 from pathlib import Path
 
+def run_database_import():
+    """运行数据库导入脚本，如果失败则退出"""
+    print("="*60)
+    print("开始数据库导入流程")
+    print("="*60)
+    
+    writh_sql_path = Path(__file__).parent / "backend" / "sql" / "writh_sql.py"
+    
+    if not writh_sql_path.exists():
+        print(f"错误: 数据库导入脚本不存在: {writh_sql_path}")
+        return False
+    
+    print(f"正在运行数据库导入脚本: {writh_sql_path}")
+    
+    try:
+        result = subprocess.run(
+            [sys.executable, str(writh_sql_path)],
+            cwd=Path(__file__).parent,
+            capture_output=True,
+            text=True,
+            encoding='utf-8'
+        )
+        
+        if result.returncode != 0:
+            print(f"\n错误: 数据库导入失败！")
+            print(f"返回码: {result.returncode}")
+            print(f"错误输出:\n{result.stderr}")
+            return False
+        
+        print(f"\n数据库导入成功！")
+        print(f"输出:\n{result.stdout}")
+        return True
+        
+    except Exception as e:
+        print(f"\n错误: 运行数据库导入脚本时发生异常: {e}")
+        return False
+
 def start_servers():
     project_root = Path(__file__).parent
+    
+    # 先运行数据库导入
+    if not run_database_import():
+        print("\n数据库导入失败，程序退出")
+        sys.exit(1)
+    
+    print("\n" + "="*60)
+    print("开始启动服务器")
+    print("="*60)
     
     backend_cmd = [
         sys.executable, "-m", "uvicorn", 
@@ -65,6 +111,19 @@ def start_servers():
         backend_process.wait()
         frontend_process.wait()
         print("服务器已停止")
+    
+    except Exception as e:
+        print(f"\n\n发生错误: {e}")
+        print("正在停止服务器...")
+        try:
+            backend_process.terminate()
+            frontend_process.terminate()
+            backend_process.wait()
+            frontend_process.wait()
+        except:
+            pass
+        print("服务器已停止")
+        sys.exit(1)
 
 if __name__ == "__main__":
     start_servers()
