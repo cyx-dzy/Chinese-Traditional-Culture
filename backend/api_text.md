@@ -16,7 +16,7 @@
   - MySQL 已启动，且存在数据库：
     - 数据库名：`ancient_building`
     - 用户名：`root`
-    - 密码：`135792468aB.`
+    - 密码：请运行时输入
     - 端口：`3306`
   - 四张表已按提供的 SQL 创建完成。
   - 四个 CSV 已放在项目根目录（与 `backend` 同级）：
@@ -353,7 +353,7 @@
     db_host=127.0.0.1
     db_port=3306
     db_user=root
-    db_password=135792468aB.
+    db_password=your_password
     db_name=ancient_building
     ```
   - 重启 `uvicorn`。

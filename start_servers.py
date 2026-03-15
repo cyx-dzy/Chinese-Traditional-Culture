@@ -3,6 +3,22 @@ import sys
 import os
 from pathlib import Path
 
+
+def get_database_password():
+    """获取数据库密码"""
+    print("="*60)
+    print("溯光而行 - 服务器启动程序")
+    print("="*60)
+    print("\n请输入MySQL数据库密码:")
+    password = input().strip()
+    
+    if not password:
+        print("错误: 密码不能为空")
+        return None
+    
+    return password
+
+
 def run_database_import():
     """运行数据库导入脚本，如果失败则退出"""
     print("="*60)
@@ -23,7 +39,8 @@ def run_database_import():
             cwd=Path(__file__).parent,
             capture_output=True,
             text=True,
-            encoding='utf-8'
+            encoding='utf-8',
+            env={**os.environ, "DB_PASSWORD": os.environ.get("DB_PASSWORD", "")}
         )
         
         if result.returncode != 0:
@@ -42,6 +59,15 @@ def run_database_import():
 
 def start_servers():
     project_root = Path(__file__).parent
+    
+    # 获取数据库密码
+    db_password = get_database_password()
+    if not db_password:
+        print("\n密码输入失败，程序退出")
+        sys.exit(1)
+    
+    # 设置环境变量
+    os.environ["DB_PASSWORD"] = db_password
     
     # 先运行数据库导入
     if not run_database_import():
