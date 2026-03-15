@@ -6,7 +6,7 @@ import os
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "yourpassword",  # 替换为实际密码
+    "password": "135792468aB.",  # 替换为实际密码
     "database": "ancient_building",
     "charset": "utf8mb4",
 }
@@ -34,8 +34,10 @@ def insert_csv_to_table(cursor, table_name, csv_file, columns=None, extra_proces
             values = []
             for col in columns:
                 val = row.get(col, None)
-                if val == "":
-                    val = None
+                # 把空字符串、“无”、“待考究”等占位符统一当成 NULL
+                if isinstance(val, str):
+                    if val.strip() in ("", "无", "待考究"):
+                        val = None
                 values.append(val)
             if extra_process:
                 values = extra_process(values, row)
@@ -52,15 +54,14 @@ def main():
     conn = pymysql.connect(**DB_CONFIG)
     cursor = conn.cursor()
 
-    # 数据文件目录（假设脚本在项目根目录，数据在 ./data 下）
+    # 数据文件目录：当前脚本所在目录（即 backend/sql，下有 *.csv）
     base_dir = os.path.dirname(__file__)
-    data_dir = os.path.join(base_dir, "data")
+    data_dir = base_dir
 
-    # 1. 插入 buildings（CSV中应包含id列）
+    # 1. 插入 buildings（CSV 不含 id，id 由数据库自增）
     buildings_csv = os.path.join(data_dir, "buildings.csv")
     print("正在导入 buildings...")
     buildings_columns = [
-        "id",
         "name",
         "name_en",
         "dynasty",
@@ -78,11 +79,10 @@ def main():
     insert_csv_to_table(cursor, "buildings", buildings_csv, columns=buildings_columns)
     conn.commit()
 
-    # 2. 插入 building_details
+    # 2. 插入 building_details（CSV 不含 id，id 由数据库自增）
     details_csv = os.path.join(data_dir, "building_details.csv")
     print("正在导入 building_details...")
     details_columns = [
-        "id",
         "building_id",
         "section_type",
         "title",
@@ -94,11 +94,10 @@ def main():
     )
     conn.commit()
 
-    # 3. 插入 images（需要处理 is_cover 字段）
+    # 3. 插入 images（CSV 不含 id，id 由数据库自增；需要处理 is_cover 字段）
     images_csv = os.path.join(data_dir, "images.csv")
     print("正在导入 images...")
     images_columns = [
-        "id",
         "building_id",
         "image_path",
         "image_type",
@@ -108,16 +107,16 @@ def main():
     ]
 
     def process_images(values, row):
-        # is_cover 在列表中的索引为6（从0开始）
-        if values[6] is not None:
+        # is_cover 在列表中的索引为5（从0开始）
+        if values[5] is not None:
             # 将 'TRUE'/'FALSE' 或 '1'/'0' 转为整数 1/0
-            if isinstance(values[6], str):
-                if values[6].upper() == "TRUE" or values[6] == "1":
-                    values[6] = 1
+            if isinstance(values[5], str):
+                if values[5].upper() == "TRUE" or values[5] == "1":
+                    values[5] = 1
                 else:
-                    values[6] = 0
+                    values[5] = 0
             else:
-                values[6] = int(values[6])
+                values[5] = int(values[5])
         return values
 
     insert_csv_to_table(
@@ -129,10 +128,10 @@ def main():
     )
     conn.commit()
 
-    # 4. 插入 faq
+    # 4. 插入 faq（CSV 不含 id，id 由数据库自增）
     faq_csv = os.path.join(data_dir, "faq.csv")
     print("正在导入 faq...")
-    faq_columns = ["id", "question", "answer", "sort_order"]
+    faq_columns = ["question", "answer", "sort_order"]
     insert_csv_to_table(cursor, "faq", faq_csv, columns=faq_columns)
     conn.commit()
 
