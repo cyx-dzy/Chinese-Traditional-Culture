@@ -1,0 +1,10 @@
+USE ancient_building;
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE building_details;
+TRUNCATE TABLE images;
+TRUNCATE TABLE faq;
+TRUNCATE TABLE buildings;
+
+SET FOREIGN_KEY_CHECKS = 1;
