@@ -65,6 +65,7 @@ class FAQItem(BaseModel):
 class HomeHighlightBuilding(BaseModel):
     id: int
     name: str
+    name_en: Optional[str] = None
     dynasty: str
     category: str
     cover_image: Optional[str] = None

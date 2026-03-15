@@ -52,12 +52,9 @@ def get_building_detail(
     """
     获取单个建筑的完整详情（详情页用）。
     """
-    building: Optional[Building] = (
-        db.query(Building)
-        .filter(Building.id == building_id)
-        .options()
-        .first()
-    )
+    building: Optional[Building] = db.query(Building).filter(
+        Building.id == building_id
+    ).first()
     if not building:
         raise HTTPException(status_code=404, detail="建筑不存在")
 
