@@ -2,7 +2,7 @@
   <div class="layout">
     <header class="header">
       <div class="logo" @click="$router.push('/')">
-        <span class="logo-main">栋宇遗风</span>
+        <span class="logo-main">溯光而行</span>
         <span class="logo-sub">中国古代建筑成就数字展</span>
       </div>
       <nav class="nav">
@@ -28,7 +28,7 @@
     </button>
 
     <footer class="footer">
-      <p>© {{ new Date().getFullYear() }} 栋宇遗风 · 中国古代建筑成就数字展</p>
+      <p>© {{ new Date().getFullYear() }} 溯光而行 · 中国古代建筑成就数字展</p>
     </footer>
   </div>
 </template>
