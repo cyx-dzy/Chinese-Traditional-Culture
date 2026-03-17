@@ -1,15 +1,20 @@
 import pymysql
 import csv
 import os
+import sys
 
-# 数据库连接配置（请根据实际情况修改）
+# 数据库连接配置（从环境变量获取）
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "135792468aB.",  # 替换为实际密码
+    "password": os.environ.get("DB_PASSWORD"),
     "database": "ancient_building",
     "charset": "utf8mb4",
 }
+
+if not DB_CONFIG["password"]:
+    print("错误: 未设置数据库密码环境变量 DB_PASSWORD")
+    sys.exit(1)
 
 
 def insert_csv_to_table(cursor, table_name, csv_file, columns=None, extra_process=None):
