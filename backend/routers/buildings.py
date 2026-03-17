@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from ..models import Building, BuildingDetail, Image
-from ..schemas import BuildingListItem, BuildingDetailResponse, BuildingBase
+from database import get_db
+from models import Building, BuildingDetail, Image
+from schemas import BuildingListItem, BuildingDetailResponse, BuildingBase
 
 
 router = APIRouter(prefix="/buildings", tags=["buildings"])

@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from ..models import Building, FAQ
-from ..schemas import HomeResponse, HomeHighlightBuilding, HomeStats, FAQItem
+from database import get_db
+from models import Building, FAQ
+from schemas import HomeResponse, HomeHighlightBuilding, HomeStats, FAQItem
 
 
 router = APIRouter(prefix="/home", tags=["home"])
