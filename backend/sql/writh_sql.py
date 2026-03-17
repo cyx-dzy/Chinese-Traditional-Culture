@@ -7,14 +7,10 @@ import sys
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": os.environ.get("DB_PASSWORD"),
+    "password": "135792468aB.",
     "database": "ancient_building",
     "charset": "utf8mb4",
 }
-
-if not DB_CONFIG["password"]:
-    print("错误: 未设置数据库密码环境变量 DB_PASSWORD")
-    sys.exit(1)
 
 
 def insert_csv_to_table(cursor, table_name, csv_file, columns=None, extra_process=None):

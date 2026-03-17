@@ -5,10 +5,26 @@ from pathlib import Path
 
 
 def get_database_password():
-    """获取数据库密码"""
+    """获取数据库密码，优先从.env文件读取"""
     print("="*60)
     print("溯光而行 - 服务器启动程序")
     print("="*60)
+    
+    env_file = Path(__file__).parent / ".env"
+    
+    if env_file.exists():
+        try:
+            with open(env_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith('DB_PASSWORD='):
+                        password = line.split('=', 1)[1].strip()
+                        if password and password != 'your_database_password_here':
+                            print(f"\n从 .env 文件读取数据库密码")
+                            return password
+        except Exception as e:
+            print(f"读取 .env 文件失败: {e}")
+    
     print("\n请输入MySQL数据库密码:")
     password = input().strip()
     
@@ -38,19 +54,28 @@ def run_database_import():
             [sys.executable, str(writh_sql_path)],
             cwd=Path(__file__).parent,
             capture_output=True,
-            text=True,
-            encoding='utf-8',
+            text=False,
             env={**os.environ, "DB_PASSWORD": os.environ.get("DB_PASSWORD", "")}
         )
         
         if result.returncode != 0:
             print(f"\n错误: 数据库导入失败！")
             print(f"返回码: {result.returncode}")
-            print(f"错误输出:\n{result.stderr}")
+            if result.stderr:
+                try:
+                    stderr_text = result.stderr.decode('utf-8', errors='ignore')
+                    print(f"错误输出:\n{stderr_text}")
+                except:
+                    print(f"错误输出: (无法解码)")
             return False
         
         print(f"\n数据库导入成功！")
-        print(f"输出:\n{result.stdout}")
+        if result.stdout:
+            try:
+                stdout_text = result.stdout.decode('utf-8', errors='ignore')
+                print(f"输出:\n{stdout_text}")
+            except:
+                print(f"输出: (无法解码)")
         return True
         
     except Exception as e:
@@ -80,7 +105,7 @@ def start_servers():
     
     backend_cmd = [
         sys.executable, "-m", "uvicorn", 
-        "backend.main:app",
+        "main:app",
         "--reload",
         "--host", "0.0.0.0",
         "--port", "8000"
@@ -89,13 +114,18 @@ def start_servers():
     frontend_cmd = ["npm", "run", "dev"]
     
     print("正在启动后端服务器...")
+    
+    backend_env = os.environ.copy()
+    backend_env["DB_PASSWORD"] = db_password
+    
     backend_process = subprocess.Popen(
         backend_cmd,
-        cwd=project_root,
+        cwd=project_root / "backend",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         encoding='utf-8',
-        errors='ignore'
+        errors='ignore',
+        env=backend_env
     )
     
     print("正在启动前端服务器...")
