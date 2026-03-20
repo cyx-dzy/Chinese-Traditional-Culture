@@ -33,8 +33,11 @@
             v-model="currentQuestion"
             type="text"
             placeholder="例如：为什么中国古建筑不用钉子？"
+            :disabled="isLoading"
           />
-          <button type="submit">发送</button>
+          <button type="submit" :disabled="isLoading">
+            {{ isLoading ? "发送中..." : "发送" }}
+          </button>
         </form>
       </section>
     </div>
@@ -44,6 +47,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import api from "@/services/api";
+import { chatWithAI } from "@/services/ai";
 
 interface FAQItem {
   id: number;
@@ -64,6 +68,7 @@ const messages = ref<ChatMessage[]>([
   },
 ]);
 const currentQuestion = ref("");
+const isLoading = ref(false);
 
 const loadFAQ = async () => {
   const res = await api.get("/faq/");
@@ -74,22 +79,26 @@ const fillQuestion = (q: string) => {
   currentQuestion.value = q;
 };
 
-const sendMessage = () => {
+const sendMessage = async () => {
   if (!currentQuestion.value.trim()) return;
   const q = currentQuestion.value.trim();
+  
   messages.value.push({ role: "user", content: q });
-
-  // 暂无真正 AI 接口，这里简单用 FAQ 中的匹配答案或占位回复
-  const matched = faq.value.find((f) => q.includes(f.question.slice(0, 4)));
-  if (matched) {
-    messages.value.push({ role: "ai", content: matched.answer });
-  } else {
+  isLoading.value = true;
+  
+  try {
+    const res = await chatWithAI(q);
+    messages.value.push({ role: "ai", content: res.response });
+  } catch (error) {
+    console.error("AI对话失败:", error);
     messages.value.push({
       role: "ai",
-      content: "这是一个很好的问题，目前示例版暂未接入真实大模型，我会在正式版中为你详细解答。",
+      content: "抱歉，AI服务暂时不可用，请稍后再试。",
     });
+  } finally {
+    isLoading.value = false;
   }
-
+  
   currentQuestion.value = "";
 };
 

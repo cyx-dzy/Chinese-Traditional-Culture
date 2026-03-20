@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import settings
-from routers import buildings, home, faq
+from routers import buildings, home, faq, ai
 
 
 app = FastAPI(
@@ -23,6 +23,7 @@ app.add_middleware(
 app.include_router(home.router)
 app.include_router(buildings.router)
 app.include_router(faq.router)
+app.include_router(ai.router)
 
 
 @app.get("/health")
