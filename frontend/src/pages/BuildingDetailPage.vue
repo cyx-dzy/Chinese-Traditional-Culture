@@ -84,9 +84,7 @@
           v-for="item in building.related_buildings"
           :key="item.id"
           class="card"
-          @click="
-            $router.push({ name: 'building-detail', params: { id: item.id } })
-          "
+          @click="goToRelatedBuilding(item.id)"
         >
           <div class="card-cover" :style="coverStyle(item.cover_image)"></div>
           <div class="card-body">
@@ -104,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "@/services/api";
 
@@ -167,6 +165,8 @@ const loadDetail = async () => {
   if (!id) return;
   const res = await api.get(`/buildings/${id}`);
   building.value = res.data;
+  console.log('建筑详情数据:', building.value);
+  console.log('相关建筑列表:', building.value?.related_buildings);
 };
 
 const coverStyle = (url?: string | null) => {
@@ -190,8 +190,33 @@ const askAboutBuilding = () => {
   }
 };
 
+const goToRelatedBuilding = (itemId: number) => {
+  console.log('点击相关建筑，ID:', itemId, '类型:', typeof itemId);
+  console.log('当前建筑ID:', building.value?.id);
+  
+  const targetId = Number(itemId);
+  console.log('转换后的ID:', targetId);
+  
+  router.push({
+    name: 'building-detail',
+    params: { id: targetId }
+  }).then(() => {
+    console.log('路由跳转成功');
+  }).catch((err) => {
+    console.error('路由跳转失败:', err);
+  });
+};
+
 onMounted(() => {
   loadDetail();
 });
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    console.log('路由参数变化，新的ID:', newId);
+    loadDetail();
+  }
+);
 </script>
 
