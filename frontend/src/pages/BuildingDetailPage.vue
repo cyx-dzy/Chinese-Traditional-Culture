@@ -61,8 +61,8 @@
           :key="d.id"
           class="detail-section"
         >
-          <h3>{{ d.title }}</h3>
-          <p class="content">{{ d.content }}</p>
+          <h3>{{ formatText(d.title) }}</h3>
+          <p class="content">{{ formatText(d.content) }}</p>
         </article>
       </div>
     </section>
@@ -173,6 +173,11 @@ const coverStyle = (url?: string | null) => {
 };
 
 const imgStyle = (url: string) => ({ backgroundImage: `url(${url})` });
+
+const formatText = (text?: string) => {
+  if (!text) return '';
+  return text.replace(/^[""'']+|[""'']+$/g, '');
+};
 
 onMounted(() => {
   loadDetail();

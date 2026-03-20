@@ -23,7 +23,7 @@
       <slot />
     </main>
 
-    <button class="ai-float" @click="$router.push({ name: 'ai' })">
+    <button v-if="!isDetailPage" class="ai-float" @click="$router.push({ name: 'ai' })">
       向 AI 提问
     </button>
 
@@ -33,5 +33,11 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const isDetailPage = computed(() => route.name === 'building-detail' || route.name === 'ai');
+</script>
 

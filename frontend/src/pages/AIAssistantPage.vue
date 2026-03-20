@@ -116,11 +116,31 @@ const sendMessage = async () => {
     const res = await chatWithAI(q);
     messages.value.push({ role: "ai", content: res });
     scrollToBottom();
-  } catch (error) {
+  } catch (error: any) {
     console.error("AI对话失败:", error);
+    
+    let errorMessage = "抱歉，AI服务暂时不可用，请稍后再试。";
+    
+    if (error.response) {
+      const status = error.response.status;
+      if (status === 504) {
+        errorMessage = "AI服务响应超时，请稍后再试。";
+      } else if (status === 503) {
+        errorMessage = "AI服务连接失败，请检查网络连接。";
+      } else if (status >= 500) {
+        errorMessage = "AI服务暂时不可用，请稍后再试。";
+      } else {
+        errorMessage = `AI服务错误 (状态码: ${status})，请稍后再试。`;
+      }
+    } else if (error.code === 'ECONNABORTED') {
+      errorMessage = "请求被中断，请重试。";
+    } else if (error.message && error.message.includes('timeout')) {
+      errorMessage = "AI服务响应超时，请稍后再试。";
+    }
+    
     messages.value.push({
       role: "ai",
-      content: "抱歉，AI服务暂时不可用，请稍后再试。",
+      content: errorMessage,
     });
     scrollToBottom();
   } finally {

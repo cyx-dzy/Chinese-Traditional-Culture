@@ -2,7 +2,10 @@ from fastapi import APIRouter, HTTPException
 import requests
 from pydantic import BaseModel
 from config import settings
+import logging
+import time
 
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/ai", tags=["ai"])
 
@@ -17,6 +20,9 @@ class ChatResponse(BaseModel):
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_with_ai(request: ChatRequest):
+    start_time = time.time()
+    logger.info(f"收到AI聊天请求: {request.message[:50]}...")
+    
     try:
         headers = {
             "Authorization": f"Bearer {settings.modelscope_api_key}",
@@ -39,6 +45,7 @@ async def chat_with_ai(request: ChatRequest):
             "max_tokens": 1000
         }
         
+        logger.info(f"发送请求到ModelScope API...")
         response = requests.post(
             f"{settings.modelscope_base_url}chat/completions",
             headers=headers,
@@ -46,13 +53,36 @@ async def chat_with_ai(request: ChatRequest):
             timeout=30
         )
         
+        elapsed_time = time.time() - start_time
+        logger.info(f"API响应时间: {elapsed_time:.2f}秒, 状态码: {response.status_code}")
+        
         if response.status_code == 200:
             data = response.json()
+            logger.debug(f"API响应数据: {data}")
             if 'choices' in data and len(data['choices']) > 0:
                 content = data['choices'][0].get('message', {}).get('content', '')
+                logger.info(f"成功获取AI回复，长度: {len(content)}字符")
                 return ChatResponse(response=content)
+            else:
+                logger.error(f"API响应格式异常: {data}")
+                raise HTTPException(status_code=500, detail="AI服务响应格式异常")
+        else:
+            logger.error(f"API返回错误状态码: {response.status_code}, 响应内容: {response.text[:200]}")
+            raise HTTPException(status_code=500, detail=f"AI服务暂时不可用 (状态码: {response.status_code})")
         
-        raise HTTPException(status_code=500, detail="AI服务暂时不可用")
-        
+    except requests.exceptions.Timeout as e:
+        elapsed_time = time.time() - start_time
+        logger.error(f"API请求超时: {str(e)}, 耗时: {elapsed_time:.2f}秒")
+        raise HTTPException(status_code=504, detail="AI服务响应超时，请稍后再试")
+    except requests.exceptions.ConnectionError as e:
+        elapsed_time = time.time() - start_time
+        logger.error(f"API连接错误: {str(e)}, 耗时: {elapsed_time:.2f}秒")
+        raise HTTPException(status_code=503, detail="AI服务连接失败，请检查网络")
+    except requests.exceptions.RequestException as e:
+        elapsed_time = time.time() - start_time
+        logger.error(f"API请求异常: {str(e)}, 耗时: {elapsed_time:.2f}秒")
+        raise HTTPException(status_code=500, detail="AI服务暂时不可用，请稍后再试")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI服务错误: {str(e)}")
+        elapsed_time = time.time() - start_time
+        logger.error(f"未知错误: {str(e)}, 耗时: {elapsed_time:.2f}秒", exc_info=True)
+        raise HTTPException(status_code=500, detail="AI服务暂时不可用，请稍后再试")
