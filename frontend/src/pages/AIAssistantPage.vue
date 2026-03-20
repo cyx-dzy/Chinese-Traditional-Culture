@@ -50,6 +50,7 @@ import { onMounted, ref } from "vue";
 import api from "@/services/api";
 import { chatWithAI } from "@/services/ai";
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 interface FAQItem {
   id: number;
@@ -81,8 +82,11 @@ const fillQuestion = (q: string) => {
   currentQuestion.value = q;
 };
 
+const purify = DOMPurify();
+
 const renderMarkdown = (content: string) => {
-  return marked(content);
+  const rawHtml = marked(content);
+  return purify.sanitize(rawHtml as string);
 };
 
 const sendMessage = async () => {
@@ -94,7 +98,7 @@ const sendMessage = async () => {
   
   try {
     const res = await chatWithAI(q);
-    messages.value.push({ role: "ai", content: res.response });
+    messages.value.push({ role: "ai", content: res });
   } catch (error) {
     console.error("AI对话失败:", error);
     messages.value.push({
