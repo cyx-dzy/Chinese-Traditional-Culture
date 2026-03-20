@@ -23,6 +23,7 @@ htmlcov/
 
 # Local environment overrides
 .env
+backend/config.yaml
 
 # Data & generated files (keep source CSV if needed)
 

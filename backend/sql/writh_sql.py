@@ -2,15 +2,33 @@ import pymysql
 import csv
 import os
 import sys
+import yaml
+from pathlib import Path
 
-# 数据库连接配置（从环境变量获取）
-DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "135792468aB.",
-    "database": "ancient_building",
-    "charset": "utf8mb4",
-}
+
+def load_config():
+    config_path = Path(__file__).parent.parent / "config.yaml"
+    if config_path.exists():
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+            db_config = config.get('database', {})
+            return {
+                "host": db_config.get('host', "localhost"),
+                "user": db_config.get('user', "root"),
+                "password": db_config.get('password', ""),
+                "database": db_config.get('name', "ancient_building"),
+                "charset": db_config.get('charset', "utf8mb4"),
+            }
+    return {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "ancient_building",
+        "charset": "utf8mb4",
+    }
+
+
+DB_CONFIG = load_config()
 
 
 def insert_csv_to_table(cursor, table_name, csv_file, columns=None, extra_process=None):
