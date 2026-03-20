@@ -47,6 +47,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, nextTick } from "vue";
+import { useRoute } from "vue-router";
 import api from "@/services/api";
 import { chatWithAI } from "@/services/ai";
 import { marked } from "marked";
@@ -63,6 +64,7 @@ interface ChatMessage {
   content: string;
 }
 
+const route = useRoute();
 const faq = ref<FAQItem[]>([]);
 const chatWindowRef = ref<HTMLElement | null>(null);
 const messages = ref<ChatMessage[]>([
@@ -152,6 +154,11 @@ const sendMessage = async () => {
 
 onMounted(() => {
   loadFAQ();
+  
+  const buildingName = route.query.building as string;
+  if (buildingName) {
+    currentQuestion.value = buildingName;
+  }
 });
 </script>
 

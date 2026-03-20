@@ -97,7 +97,7 @@
       </div>
     </section>
 
-    <button class="ai-float-inner" @click="$router.push({ name: 'ai' })">
+    <button class="ai-float-inner" @click="askAboutBuilding">
       就这座建筑问 AI
     </button>
   </div>
@@ -105,7 +105,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import api from "@/services/api";
 
 interface Detail {
@@ -139,9 +139,11 @@ interface BuildingDetail {
   images: ImageItem[];
   details: Detail[];
   related_buildings: any[];
-}
+
+};
 
 const route = useRoute();
+const router = useRouter();
 const building = ref<BuildingDetail | null>(null);
 
 const tabs = [
@@ -177,6 +179,15 @@ const imgStyle = (url: string) => ({ backgroundImage: `url(${url})` });
 const formatText = (text?: string) => {
   if (!text) return '';
   return text.replace(/^[""'']+|[""'']+$/g, '');
+};
+
+const askAboutBuilding = () => {
+  if (building.value) {
+    router.push({
+      name: 'ai',
+      query: { building: building.value.name }
+    });
+  }
 };
 
 onMounted(() => {

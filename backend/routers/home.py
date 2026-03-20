@@ -17,18 +17,16 @@ def get_home_data(db: Session = Depends(get_db)):
     """
     首页需要的综合数据：高亮建筑、统计数据、FAQ 预览。
     """
-    # 高亮建筑：每个分类随机取 1 个，如果数据不足就少一些
-    categories = ["木结构", "砖石", "园林", "法式"]
+    # 高亮建筑：随机取 6 个建筑
     highlights: List[HomeHighlightBuilding] = []
-    for cat in categories:
-        b = (
-            db.query(Building)
-            .filter(Building.category == cat)
-            .order_by(func.rand())
-            .first()
-        )
-        if b:
-            highlights.append(HomeHighlightBuilding.model_validate(b))
+    buildings = (
+        db.query(Building)
+        .order_by(func.rand())
+        .limit(6)
+        .all()
+    )
+    for b in buildings:
+        highlights.append(HomeHighlightBuilding.model_validate(b))
 
     # 统计信息
     total = db.query(func.count(Building.id)).scalar() or 0
