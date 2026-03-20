@@ -23,7 +23,8 @@
         <div class="chat-window">
           <div v-for="(msg, index) in messages" :key="index" class="chat-row">
             <div :class="['bubble', msg.role]">
-              <p>{{ msg.content }}</p>
+              <div v-if="msg.role === 'ai'" class="markdown-content" v-html="renderMarkdown(msg.content)"></div>
+              <p v-else>{{ msg.content }}</p>
             </div>
           </div>
         </div>
@@ -48,6 +49,7 @@
 import { onMounted, ref } from "vue";
 import api from "@/services/api";
 import { chatWithAI } from "@/services/ai";
+import { marked } from "marked";
 
 interface FAQItem {
   id: number;
@@ -77,6 +79,10 @@ const loadFAQ = async () => {
 
 const fillQuestion = (q: string) => {
   currentQuestion.value = q;
+};
+
+const renderMarkdown = (content: string) => {
+  return marked(content);
 };
 
 const sendMessage = async () => {

@@ -277,7 +277,7 @@ body {
 .chat-window {
   flex: 1;
   overflow-y: auto;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0.5rem;
   padding-right: 0.5rem;
 }
 
@@ -299,16 +299,108 @@ body {
 
 .bubble.ai {
   background: #f1e4cf;
+  align-self: flex-start;
+}
+
+.markdown-content {
+  line-height: 1.6;
+}
+
+.markdown-content h1 {
+  font-size: 1.3rem;
+  margin: 0.5rem 0;
+  color: #2c1b1d;
+}
+
+.markdown-content h2 {
+  font-size: 1.1rem;
+  margin: 0.4rem 0;
+  color: #3a3a5a;
+}
+
+.markdown-content h3 {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+  color: #4a5a6a;
+}
+
+.markdown-content p {
+  margin: 0.3rem 0;
+}
+
+.markdown-content ul {
+  margin: 0.3rem 0;
+  padding-left: 1.5rem;
+}
+
+.markdown-content li {
+  margin: 0.2rem 0;
+}
+
+.markdown-content strong {
+  color: #2c1b1d;
+  font-weight: 600;
+}
+
+.markdown-content em {
+  color: #e74c3c;
+  font-style: italic;
+}
+
+.markdown-content code {
+  background: #f4f4f4;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.3rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid #c5a5a6;
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 1rem 0;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: #f8f9fa;
+  font-weight: 600;
 }
 
 .input-area {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .input-area input {
   flex: 1;
   padding: 0.4rem 0.6rem;
+}
+
+.input-area button {
+  padding: 0.4rem 0.9rem;
 }
 
 @media (max-width: 768px) {
