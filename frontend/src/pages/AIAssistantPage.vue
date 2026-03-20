@@ -9,7 +9,7 @@
             :key="item.id"
             @click="fillQuestion(item.question)"
           >
-            {{ item.question }}
+            {{ formatQuestion(item.question) }}
           </li>
         </ul>
       </aside>
@@ -20,7 +20,7 @@
           <p>可以向我提问关于中国古建筑的任何问题。</p>
         </header>
 
-        <div class="chat-window">
+        <div ref="chatWindowRef" class="chat-window">
           <div v-for="(msg, index) in messages" :key="index" class="chat-row">
             <div :class="['bubble', msg.role]">
               <div v-if="msg.role === 'ai'" class="markdown-content" v-html="renderMarkdown(msg.content)"></div>
@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, nextTick } from "vue";
 import api from "@/services/api";
 import { chatWithAI } from "@/services/ai";
 import { marked } from "marked";
@@ -64,6 +64,7 @@ interface ChatMessage {
 }
 
 const faq = ref<FAQItem[]>([]);
+const chatWindowRef = ref<HTMLElement | null>(null);
 const messages = ref<ChatMessage[]>([
   {
     role: "ai",
@@ -75,11 +76,25 @@ const isLoading = ref(false);
 
 const loadFAQ = async () => {
   const res = await api.get("/faq/");
-  faq.value = res.data;
+  const allFAQ = res.data;
+  const shuffled = [...allFAQ].sort(() => Math.random() - 0.5);
+  faq.value = shuffled.slice(0, 12);
 };
 
 const fillQuestion = (q: string) => {
-  currentQuestion.value = q;
+  currentQuestion.value = formatQuestion(q);
+};
+
+const formatQuestion = (q: string) => {
+  return q.replace(/^[""'']+|[""'']+$/g, '');
+};
+
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (chatWindowRef.value) {
+      chatWindowRef.value.scrollTop = chatWindowRef.value.scrollHeight;
+    }
+  });
 };
 
 const purify = DOMPurify();
@@ -94,17 +109,20 @@ const sendMessage = async () => {
   const q = currentQuestion.value.trim();
   
   messages.value.push({ role: "user", content: q });
+  scrollToBottom();
   isLoading.value = true;
   
   try {
     const res = await chatWithAI(q);
     messages.value.push({ role: "ai", content: res });
+    scrollToBottom();
   } catch (error) {
     console.error("AI对话失败:", error);
     messages.value.push({
       role: "ai",
       content: "抱歉，AI服务暂时不可用，请稍后再试。",
     });
+    scrollToBottom();
   } finally {
     isLoading.value = false;
   }

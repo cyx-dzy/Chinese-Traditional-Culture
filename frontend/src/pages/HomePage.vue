@@ -54,8 +54,8 @@
       <h2>常见问题 · 走进古建</h2>
       <ul>
         <li v-for="item in homeData.faq_preview" :key="item.id">
-          <strong>{{ item.question }}</strong>
-          <p>{{ item.answer }}</p>
+          <strong>{{ formatText(item.question) }}</strong>
+          <p>{{ formatText(item.answer) }}</p>
         </li>
       </ul>
     </section>
@@ -99,6 +99,10 @@ const coverStyle = (url?: string | null) => {
   return {
     backgroundImage: `url(${url})`,
   };
+};
+
+const formatText = (text: string) => {
+  return text.replace(/^[""'']+|[""'']+$/g, '');
 };
 
 onMounted(() => {
