@@ -1,395 +1,253 @@
 # 溯光而行 - 中国古代建筑成就数字展
 
-一个面向大众的中国古代建筑成就数字展，希望通过可视化与交互的方式，让更多人了解木构智慧与营造美学。
+`溯光而行` 是一个面向大众的中国古代建筑数字展 Web 项目。它尝试用更容易理解、也更容易传播的方式，把古建筑背后的历史信息、结构智慧与文化审美组织成一个可浏览、可检索、可追问的在线体验。
 
-## 项目简介
+项目采用前后端分离架构：前端负责展陈式的浏览体验与交互，后端负责建筑数据、FAQ 数据和 AI 问答能力的提供。用户既可以像逛线上展览一样从首页进入，也可以按照朝代、类别、关键词筛选目标建筑，再进一步查看单体建筑的结构亮点、材料工艺、文化价值与相关图像资料。
 
-本项目是一个前后端分离的Web应用，展示中国古代建筑的辉煌成就，包括：
-- 建筑分类展示（木结构、砖石、园林、法式）
-- 建筑详情介绍
-- AI智能问答助手
-- 历史时间轴
-- 数据统计可视化
+## 项目详细介绍
 
-## 技术栈
+这个项目不是单纯的古建图片集合，也不是只提供若干接口的数据演示，而是一个围绕“中国古代建筑成就”主题设计的数字化展示原型。它希望把专业性较强的古建筑知识拆解成更容易被普通用户理解的页面结构，让用户先被内容吸引，再逐步进入更深入的知识层级。
 
-### 后端
-- **框架**: FastAPI 0.115.0
-- **数据库**: MySQL
-- **ORM**: SQLAlchemy 2.0.36
-- **服务器**: Uvicorn 0.30.5
-- **配置管理**: Pydantic Settings
+在内容组织上，项目将古建筑信息分成了首页总览、分类浏览、建筑详情、FAQ 辅助理解和 AI 讲解员几个层次：首页负责建立整体印象，分类页负责检索与筛选，详情页负责深度阅读，AI 页面负责把静态内容转化为可对话的知识体验。这样的结构既适合课程作业、数字人文展示和传统文化传播场景，也适合作为后续继续扩展数据与视觉表现的基础版本。
 
-### 前端
-- **框架**: Vue 3.5.0
-- **构建工具**: Vite 5.4.7
-- **路由**: Vue Router 4.4.5
-- **HTTP客户端**: Axios 1.7.7
-- **语言**: TypeScript 5.6.3
+在表达方式上，项目尽量兼顾“展览感”和“信息密度”。用户能在首页看到高亮建筑、历史时间轴和统计概览，也能在详情页看到建筑的核心指标、按主题分栏的说明文字、图像资源和相关推荐。再配合 AI 助手，整个项目会从“看资料”变成“看资料 + 主动提问 + 持续探索”的体验。
 
-## 环境要求
+## 核心亮点
 
-### 必需软件
-- **Python**: 3.8 或更高版本
-- **Node.js**: 16.0 或更高版本
-- **MySQL**: 5.7 或更高版本
-- **Git**: 用于版本控制
+- 以“中国古代建筑成就”为主题，结合历史、结构、材料与文化价值进行数字化展示。
+- 首页包含高亮建筑、历史时间轴、统计概览和 FAQ 预览，适合快速建立整体认知。
+- 分类页支持按建筑类别、朝代、关键词进行筛选，降低内容查找成本。
+- 建筑详情页按“历史沿革、结构成就、材料工艺、文化价值”组织内容，阅读路径更清晰。
+- AI 讲解员支持自由提问，也支持从建筑详情页带着上下文进入问答。
+- 数据层采用 MySQL + CSV 初始化脚本，便于课程展示、离线整理和后续扩充。
 
-### 推荐工具
-- **VSCode**: 代码编辑器
-- **Postman**: API测试工具
-- **MySQL Workbench**: 数据库管理工具
+## 当前内容规模
+
+项目当前内置了一套可直接初始化到数据库的演示数据：
+
+- 25 条建筑主数据
+- 100 条建筑详情内容
+- 83 条建筑图片记录
+- 69 条 FAQ 问答数据
+
+这些数据通过 `backend/sql` 目录中的 CSV 文件维护，并由初始化脚本统一写入 MySQL。
+
+## 功能模块
+
+### 1. 首页总览
+
+首页聚合了整个项目最核心的浏览入口：
+
+- 随机高亮展示部分代表性建筑
+- 历史时间轴组件，支持从时代切入内容浏览
+- 建筑总量、按类别统计、按朝代统计
+- FAQ 预览，帮助用户快速进入问题场景
+
+### 2. 分类浏览
+
+分类页支持多条件筛选：
+
+- 建筑类别筛选
+- 朝代筛选
+- 关键词搜索
+- 建筑卡片式浏览与详情跳转
+
+### 3. 建筑详情页
+
+详情页围绕单体建筑提供更完整的信息结构：
+
+- 建筑名称、朝代、地点、类别、摘要
+- 高度、间数、斗拱类型、抗震记录、材料、保存状态等核心指标
+- 按主题分栏展示的详情内容
+- 图片画廊
+- 相关推荐建筑
+- 一键跳转至 AI 页面继续提问
+
+### 4. AI 讲解员
+
+AI 页面提供面向普通用户的对话式入口：
+
+- 左侧展示 FAQ 作为快捷提问入口
+- 右侧提供聊天区域与输入框
+- 支持 Markdown 渲染返回内容
+- 后端可接入 ModelScope 模型服务，适合做古建知识讲解与扩展问答
+
+## 技术架构
+
+| 层级    | 技术方案                                   |
+| ----- | -------------------------------------- |
+| 前端    | Vue 3 + TypeScript + Vite + Vue Router |
+| 后端    | FastAPI + SQLAlchemy + Uvicorn         |
+| 数据库   | MySQL                                  |
+| 数据初始化 | Python + PyMySQL + CSV                 |
+| AI 接入 | ModelScope Chat Completions API        |
+
+## 数据组织方式
+
+后端主要围绕 4 张核心表组织内容：
+
+- `buildings`：建筑主表，保存名称、朝代、类别、摘要、核心指标等信息
+- `building_details`：建筑详情分段内容，按主题组织文字说明
+- `images`：建筑图片与图注资源
+- `faq`：常见问题与答案
+
+这样的设计既适合前端页面拆分展示，也方便未来继续补充建筑条目、专题内容和多媒体资源。
 
 ## 快速开始
+
+### 环境要求
+
+- Python 3.8 及以上
+- Node.js 18 及以上
+- MySQL 5.7 或 8.0
 
 ### 1. 克隆项目
 
 ```bash
-git clone <项目地址>
+git clone https://gitee.com/dyz-cyx/chinese-traditional-culture.git
 cd Chinese-Traditional-Culture
 ```
 
-### 2. 数据库配置
+### 2. 配置数据库
 
-#### 2.1 创建MySQL数据库
+编辑 `backend/config.yaml`，确认以下配置可用：
 
-确保MySQL服务正在运行，然后创建数据库：
-
-```sql
-CREATE DATABASE IF NOT EXISTS ancient_building 
-CHARACTER SET utf8mb4 
-COLLATE utf8mb4_unicode_ci;
+```yaml
+database:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "your_password"
+  name: "ancient_building"
+  charset: "utf8mb4"
 ```
 
-#### 2.2 配置数据库连接
+如果不希望把密码写入配置文件，也可以通过环境变量 `DB_PASSWORD` 提供。
 
-数据库配置通过环境变量管理，有以下两种方式：
+### 3. 安装依赖
 
-**方式一：使用.env文件（推荐）**
-
-在项目根目录创建 `.env` 文件：
-
-```env
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=ancient_building
-```
-
-**方式二：运行时输入密码**
-
-使用项目提供的启动脚本，运行时会提示输入数据库密码。
-
-### 3. 后端安装
-
-#### 3.1 安装Python依赖
+后端依赖：
 
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-#### 3.2 验证安装
-
-```bash
-python -c "import fastapi; print('FastAPI安装成功')"
-```
-
-### 4. 前端安装
-
-#### 4.1 安装Node.js依赖
+前端依赖：
 
 ```bash
 cd frontend
 npm install
 ```
 
-#### 4.2 验证安装
+### 4. 一键启动（推荐）
+
+项目根目录提供了统一启动脚本 `star_server.py`。
 
 ```bash
-npm --version
-node --version
+python star_server.py
 ```
 
-### 5. 数据导入
+这个脚本会自动完成以下流程：
 
-项目提供了完整的数据库导入脚本，包括：
-- 数据库和表结构创建
-- CSV数据导入
-- 图片资源配置
+1. 读取 `backend/config.yaml` 中的数据库配置
+2. 检查目标数据库是否存在、`buildings` 表是否存在、表内是否已有数据
+3. 如果数据库为空，则自动执行 `backend/sql/write_sql.py` 初始化数据
+4. 启动后端服务
+5. 启动前端服务
 
-**使用启动脚本（推荐）：**
+启动成功后默认访问地址：
 
-```bash
-python start_servers.py
-```
+- 前端：<http://localhost:5173>
+- 后端：<http://localhost:8000>
+- 接口文档：<http://localhost:8000/docs>
+- 健康检查：<http://localhost:8000/health>
 
-脚本会自动：
-1. 提示输入数据库密码
-2. 创建数据库和表结构
-3. 导入所有数据
-4. 启动前后端服务器
+### 5. 手动启动（可选）
 
-**手动导入数据：**
+如果你希望分别启动前后端，可以使用以下命令。
 
-```bash
-python backend/sql/writh_sql.py
-```
-
-### 6. 启动项目
-
-#### 方式一：使用一键启动脚本（推荐）
-
-```bash
-python start_servers.py
-```
-
-启动脚本会：
-1. 提示输入数据库密码
-2. 自动导入数据库
-3. 同时启动前后端服务器
-4. 提供访问地址
-
-#### 方式二：分别启动服务器
-
-**启动后端服务器：**
+后端：
 
 ```bash
 cd backend
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**启动前端服务器：**
+前端：
 
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
 
-### 7. 访问应用
+如果数据库还没有初始化，也可以手动执行：
 
-启动成功后，可以通过以下地址访问：
+```bash
+python backend/sql/write_sql.py
+```
 
-- **前端应用**: http://127.0.0.1:5173/
-- **后端API**: http://127.0.0.1:8000/
-- **API文档**: http://127.0.0.1:8000/docs
-- **健康检查**: http://127.0.0.1:8000/health
+## API 概览
+
+当前项目已实现的主要接口包括：
+
+- `GET /home/`：首页聚合数据
+- `GET /buildings/`：建筑列表与筛选
+- `GET /buildings/{id}`：建筑详情
+- `GET /faq/`：FAQ 列表
+- `POST /ai/chat`：AI 问答接口
 
 ## 项目结构
 
-```
+```text
 Chinese-Traditional-Culture/
-├── backend/                    # 后端代码
-│   ├── routers/              # API路由
-│   │   ├── buildings.py      # 建筑相关接口
-│   │   ├── faq.py           # 常见问题接口
-│   │   └── home.py          # 首页数据接口
-│   ├── sql/                  # 数据库脚本和数据
-│   │   ├── writh_sql.py     # 数据导入脚本
-│   │   ├── buildings.csv      # 建筑数据
-│   │   ├── building_details.csv
-│   │   ├── images.csv
-│   │   └── faq.csv
-│   ├── config.py             # 配置管理
-│   ├── database.py           # 数据库连接
-│   ├── models.py            # 数据模型
-│   ├── schemas.py           # Pydantic模型
-│   ├── main.py              # FastAPI应用入口
-│   └── requirements.txt      # Python依赖
-├── frontend/                   # 前端代码
-│   ├── src/
-│   │   ├── components/      # Vue组件
-│   │   │   └── MainLayout.vue
-│   │   ├── pages/           # 页面组件
-│   │   │   ├── HomePage.vue
-│   │   │   ├── CategoryPage.vue
-│   │   │   ├── BuildingDetailPage.vue
-│   │   │   ├── AIAssistantPage.vue
-│   │   │   └── AboutPage.vue
-│   │   ├── router/          # 路由配置
-│   │   │   └── index.ts
-│   │   ├── services/        # API服务
-│   │   │   └── api.ts
-│   │   ├── App.vue          # 根组件
-│   │   ├── main.ts          # 入口文件
-│   │   └── styles.css       # 全局样式
-│   ├── public/              # 静态资源
-│   │   └── image/         # 图片资源
-│   ├── package.json         # Node.js依赖
-│   ├── vite.config.ts       # Vite配置
-│   └── index.html          # HTML入口
-├── start_servers.py            # 一键启动脚本
-├── README.md                 # 项目说明
-└── .env.example              # 环境变量示例
+├─ backend/
+│  ├─ routers/
+│  │  ├─ home.py
+│  │  ├─ buildings.py
+│  │  ├─ faq.py
+│  │  └─ ai.py
+│  ├─ sql/
+│  │  ├─ buildings.csv
+│  │  ├─ building_details.csv
+│  │  ├─ images.csv
+│  │  ├─ faq.csv
+│  │  └─ write_sql.py
+│  ├─ config.py
+│  ├─ config.yaml
+│  ├─ database.py
+│  ├─ main.py
+│  ├─ models.py
+│  └─ schemas.py
+├─ frontend/
+│  ├─ public/
+│  └─ src/
+│     ├─ components/
+│     ├─ pages/
+│     ├─ router/
+│     └─ services/
+├─ star_server.py
+└─ README.md
 ```
 
-## 开发说明
+## 适用场景
 
-### 后端开发
+这个项目尤其适合以下场景：
 
-#### 添加新的API端点
+- 中国传统文化课程展示
+- 数字人文与文化遗产方向的 Web 原型
+- 古建筑知识可视化项目
+- 结合数据库、前后端和 AI 能力的综合实训项目
 
-1. 在 `backend/routers/` 中创建或修改路由文件
-2. 在 `backend/schemas.py` 中定义数据模型
-3. 在 `backend/main.py` 中注册路由
+## 后续可扩展方向
 
-#### 数据库操作
-
-使用SQLAlchemy ORM进行数据库操作：
-
-```python
-from sqlalchemy.orm import Session
-from .database import get_db
-from .models import Building
-
-# 获取数据库会话
-db: Session = next(get_db())
-
-# 查询数据
-buildings = db.query(Building).all()
-
-# 创建数据
-new_building = Building(name="应县木塔", dynasty="辽")
-db.add(new_building)
-db.commit()
-```
-
-### 前端开发
-
-#### 添加新页面
-
-1. 在 `frontend/src/pages/` 中创建页面组件
-2. 在 `frontend/src/router/index.ts` 中添加路由
-3. 在导航栏中添加链接
-
-#### API调用
-
-使用Axios调用后端API：
-
-```typescript
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8000';
-
-export async function getBuildings() {
-  const response = await axios.get(`${API_BASE_URL}/buildings/`);
-  return response.data;
-}
-```
-
-## 常见问题
-
-### 1. 数据库连接失败
-
-**问题**: `Access denied for user 'root'@'localhost'`
-
-**解决方案**:
-- 检查MySQL服务是否运行
-- 确认用户名和密码正确
-- 检查数据库是否已创建
-
-### 2. 端口被占用
-
-**问题**: `Address already in use`
-
-**解决方案**:
-```bash
-# 查找占用端口的进程
-netstat -ano | findstr :8000
-
-# 结束进程
-taskkill /PID <进程ID> /F
-```
-
-### 3. 前端依赖安装失败
-
-**问题**: `npm install` 失败
-
-**解决方案**:
-```bash
-# 清除缓存
-npm cache clean --force
-
-# 删除node_modules和package-lock.json
-rm -rf node_modules package-lock.json
-
-# 重新安装
-npm install
-```
-
-### 4. Python依赖安装失败
-
-**问题**: `pip install` 失败
-
-**解决方案**:
-```bash
-# 升级pip
-python -m pip install --upgrade pip
-
-# 使用国内镜像源
-pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
-
-### 5. 数据导入失败
-
-**问题**: CSV导入时出现错误
-
-**解决方案**:
-- 检查CSV文件编码是否为UTF-8
-- 确认CSV文件路径正确
-- 查看错误日志定位具体问题
-
-## 部署说明
-
-### 生产环境配置
-
-1. **修改配置**:
-   - 设置生产数据库连接
-   - 配置CORS允许的域名
-   - 关闭debug模式
-
-2. **构建前端**:
-```bash
-cd frontend
-npm run build
-```
-
-3. **部署后端**:
-```bash
-cd backend
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
-```
-
-## 贡献指南
-
-欢迎贡献代码！请遵循以下步骤：
-
-1. Fork本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启Pull Request
-
-## 许可证
-
-本项目采用 MIT 许可证 - 查看 LICENSE 文件了解详情
-
-## 联系方式
-
-如有问题或建议，请通过以下方式联系：
-
-- 提交Issue
-- 发送邮件
-- 项目讨论区
+- 扩充建筑样本数量与专题内容
+- 增加地图、朝代视图或关系图谱视图
+- 为 AI 问答补充更稳定的知识边界与上下文注入
+- 引入后台内容管理能力，支持后续维护数据
+- 优化移动端视觉表现与交互动画
 
 ## 致谢
 
-感谢所有为本项目做出贡献的开发者和设计师！
-
----
-
-**项目名称**: 溯光而行  
-**项目描述**: 中国古代建筑成就数字展  
-**技术支持**: FastAPI + Vue 3 + MySQL  
-**最后更新**: 2024年
+感谢所有为中国传统建筑研究、资料整理与数字化传播提供启发的公开资料与研究成果。本项目当前数据适合作为学习、展示和原型开发基础，后续可以继续打磨成更完整的数字展陈系统。
