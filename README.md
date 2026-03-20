@@ -108,18 +108,33 @@ git clone https://gitee.com/dyz-cyx/chinese-traditional-culture.git
 cd Chinese-Traditional-Culture
 ```
 
-### 2. 配置数据库
+### 2. 配置项目
+
+从配置模板复制并编辑配置文件：
+
+```bash
+cp backend/config.yaml.example backend/config.yaml
+```
 
 编辑 `backend/config.yaml`，确认以下配置可用：
 
 ```yaml
+app:
+  name: "溯光而行"
+  debug: true
+
 database:
   host: "127.0.0.1"
   port: 3306
   user: "root"
-  password: "your_password"
+  password: "your_database_password"
   name: "ancient_building"
   charset: "utf8mb4"
+
+modelscope:
+  api_key: "your_modelscope_api_key"
+  model: "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B"
+  base_url: "https://api-inference.modelscope.cn/v1/"
 ```
 
 如果不希望把密码写入配置文件，也可以通过环境变量 `DB_PASSWORD` 提供。
