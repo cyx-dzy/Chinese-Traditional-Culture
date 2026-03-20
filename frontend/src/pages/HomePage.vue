@@ -27,6 +27,8 @@
       </div>
     </section>
 
+    <Timeline />
+
     <section class="section stats" v-if="homeData">
       <h2>数据库概览</h2>
       <p class="total">已收录建筑：{{ homeData.stats.total_buildings }} 处</p>
@@ -66,6 +68,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import api from "@/services/api";
+import Timeline from "@/components/Timeline.vue";
 
 interface HomeData {
   highlights: any[];

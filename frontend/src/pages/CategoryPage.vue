@@ -10,6 +10,13 @@
         </option>
       </select>
 
+      <select v-model="selectedDynasty">
+        <option value="">全部朝代</option>
+        <option v-for="dyn in dynasties" :key="dyn" :value="dyn">
+          {{ dyn }}
+        </option>
+      </select>
+
       <input
         v-model="keyword"
         type="text"
@@ -39,6 +46,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import api from "@/services/api";
 
 interface BuildingItem {
@@ -51,13 +59,17 @@ interface BuildingItem {
 }
 
 const categories = ["木结构", "砖石", "园林", "法式"];
+const dynasties = ["先秦", "秦汉", "魏晋", "隋唐", "宋元", "明清"];
 const selectedCategory = ref<string>("");
+const selectedDynasty = ref<string>("");
 const keyword = ref<string>("");
 const buildings = ref<BuildingItem[]>([]);
+const route = useRoute();
 
 const loadBuildings = async () => {
   const params: Record<string, string> = {};
   if (selectedCategory.value) params.category = selectedCategory.value;
+  if (selectedDynasty.value) params.dynasty = selectedDynasty.value;
   if (keyword.value) params.keyword = keyword.value;
 
   const res = await api.get("/buildings/", { params });
@@ -70,10 +82,17 @@ const coverStyle = (url?: string | null) => {
 };
 
 onMounted(() => {
+  if (route.query.dynasty) {
+    selectedDynasty.value = route.query.dynasty as string;
+  }
   loadBuildings();
 });
 
 watch(selectedCategory, () => {
+  loadBuildings();
+});
+
+watch(selectedDynasty, () => {
   loadBuildings();
 });
 </script>
